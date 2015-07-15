@@ -14,6 +14,8 @@ class QuestionSpider(scrapy.Spider):
     )
 
     def parse_answer(self, response):
+        # from scrapy.shell import inspect_response
+        # inspect_response(response, self)
         answer_list = []
         mode_xpath = response.selector.xpath('//section/article/div[contains(@class, mod-shadow)][2]//*[contains(@class, "title")]//text()').extract()
         if mode_xpath:
@@ -22,10 +24,10 @@ class QuestionSpider(scrapy.Spider):
             item = AnswerItem()
             item["mode"] = mode
             content = response.selector.xpath('//section/article/div[contains(@class, mod-shadow)][2]//*[contains(@class, "content")][1]').extract()
-            item['content'] = content
+            item['content'] = content[0]
             item['people_link'] = response.selector.xpath('//section/article/div[contains(@class, mod-shadow)][2]//*[contains(@class, "name")]//@href').extract()[0]
             item['pos_time'] = response.selector.xpath('//section/article/div[contains(@class, mod-shadow)][2]//*[contains(@class, "time")]//text()').extract()[-1]
-            answer_list.append(item)
+            answer_list.append(dict(item))
         else:
             mode = ""  # 其他普通回答
             common_list = response.selector.xpath('//section/article/div[contains(@id,"wgt-answers")]/div[2]/div[re:test(@id,"answer")]')
@@ -37,6 +39,7 @@ class QuestionSpider(scrapy.Spider):
                 ls_qt_cntnt = each.xpath('div/div[2]/div[1]/span/text()').extract()
                 each_item["content"] = "".join(ls_qt_cntnt)
                 each_item["mode"] = mode
+                answer_list.append(dict(each_item))
         return answer_list
 
     def parse(self, response):
@@ -64,8 +67,6 @@ class QuestionSpider(scrapy.Spider):
         item["ask_tags"] = ask_tags
         ls_answer_cntnt = response.selector.xpath('//section/article/div[contains(@id,"wgt-ask")]/pre/text()').extract()
         item["content"] = "".join(ls_answer_cntnt)
-
         item["answers"] = self.parse_answer(response)
-
         return item
 
