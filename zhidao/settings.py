@@ -64,11 +64,11 @@ NEWSPIDER_MODULE = 'zhidao.spiders'
 ITEM_PIPELINES = {
    'zhidao.pipelines.DuplicatesPipeline': 300,
    'zhidao.pipelines.JsonWithEncodingPipeline': 301,
-   # 'zhidao.pipelines.MongoPipeline': 302,
+   'zhidao.pipelines.MongoPipeline': 302,
 }
 
-MONGO_URI = ""
-MONGO_DATABASE = ""
+MONGO_URI = "114.215.104.130:27017"
+MONGO_DATABASE = "zhidao"
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
