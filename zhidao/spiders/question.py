@@ -41,6 +41,9 @@ class QuestionSpider(scrapy.Spider):
         return answer_list
 
     def parse(self, response):
+        if response.selector.xpath("//div[contains(@class, container)]/div/span[contains(@id, 'countdown-timer')]").extract():
+            # 问题不存在
+            return
         item = QuestionItem()
         # from scrapy.shell import inspect_response
         # inspect_response(response, self)
