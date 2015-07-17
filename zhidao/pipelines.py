@@ -16,13 +16,13 @@ import pymongo
 class DuplicatesPipeline(object):
 
     def __init__(self):
-        self.ids_seen = set()
+        self.client = pymongo.MongoClient('mongodb://114.215.104.130:27017/')
+        self.db = self.client.zhidao
 
     def process_item(self, item, spider):
-        if item['qid'] in self.ids_seen:
+        if self.db.QuestionItem.find_one({"qid": item["qid"]}):
             raise DropItem("Duplicate item found: %s" % item)
         else:
-            self.ids_seen.add(item['qid'])
             return item
 
 
